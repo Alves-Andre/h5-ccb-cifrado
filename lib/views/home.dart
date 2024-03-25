@@ -1,24 +1,14 @@
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
+import 'package:h5_ccb_cifra/data/datahinos.dart';
 import 'package:h5_ccb_cifra/views/favorite.dart';
 import 'package:h5_ccb_cifra/views/hino.dart';
 import 'package:h5_ccb_cifra/views/rate.dart';
 import 'package:h5_ccb_cifra/componets/menu_drawer.dart';
+import 'package:h5_ccb_cifra/data/datahinos.dart';
 
 
-List<Map<String, dynamic>> hinos = [
-  {
-      "numero": 1,
-      "titulo": "1 - Cristo Meu Mestre",
-      "favorito": true
-  },
-  {
-    "numero": 2,
-    "titulo": "2 - De Deus tu és Eleita",
-    "favorito": false
-  }
-];
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
 
@@ -53,7 +43,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> hinosExibidos = hinos
+    List<Map<String, dynamic>> hinosExibidos = hinoManager.hinos
         .where((hino) =>
             (!_showFavoritesOnly || hino["favorito"]) &&
             hino["titulo"].toLowerCase().contains(_searchText.toLowerCase()))
@@ -157,7 +147,7 @@ class _HomeViewState extends State<HomeView> {
                 // Navegar para a tela de Favoritos
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => FavoriteView()),
+                  MaterialPageRoute(fullscreenDialog: true, builder: (context) => FavoriteView()),
                 );
               }
             });

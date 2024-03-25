@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:h5_ccb_cifra/views/about.dart';
+import 'package:h5_ccb_cifra/views/donate.dart';
 import 'package:h5_ccb_cifra/views/favorite.dart';
 import 'package:h5_ccb_cifra/views/home.dart';
 import 'package:h5_ccb_cifra/views/rate.dart';
+import 'dart:io';
 
 class MenuDrawer extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -60,15 +63,20 @@ class MenuDrawer extends StatelessWidget {
             leading: Icon(Icons.monetization_on),
             title: Text('Doação'),
             onTap: () {
-              Navigator.pop(context);
-              // Adicione a lógica para a tela de doação
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const DonateView()),
+                );
             },
           ),
           ListTile(
             leading: Icon(Icons.info),
             title: Text('Sobre'),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AboutView()),
+                );
               // Adicione a lógica para a tela Sobre
             },
           ),
@@ -76,7 +84,7 @@ class MenuDrawer extends StatelessWidget {
             leading: Icon(Icons.exit_to_app),
             title: Text('Sair'),
             onTap: () {
-              Navigator.pop(context);
+              exit(0);
               // Adicione a lógica para sair do aplicativo
             },
           ),

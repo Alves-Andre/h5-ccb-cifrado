@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:h5_ccb_cifra/data/datahinos.dart';
 import 'package:h5_ccb_cifra/views/hino.dart';
 import 'package:h5_ccb_cifra/componets/menu_drawer.dart';
 import 'package:h5_ccb_cifra/views/home.dart';
-import 'package:h5_ccb_cifra/data/datahinos.dart';
 
-List<Map<String, dynamic>> hinos = getMyList();
+List<Map<String, dynamic>> hinos = [
+  {
+    "numero": 1,
+    "titulo": "1 - Cristo Meu Mestre",
+    "favorito": true
+  },
+  {
+    "numero": 2,
+    "titulo": "2 - De Deus tu és Eleita",
+    "favorito": false
+  }
+];
 
 class FavoriteView extends StatefulWidget {
   const FavoriteView({Key? key}) : super(key: key);
@@ -16,29 +25,30 @@ class FavoriteView extends StatefulWidget {
 
 class _FavoriteViewState extends State<FavoriteView> {
   String _searchText = "";
-  int _selectedIndex = 1;
-  bool _showFavoritesOnly = false;
+  int _selectedIndex = 0;
+  bool _showFavoritesOnly = true;
   final TextEditingController _searchController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> hinosExibidos = hinoManager.hinos
+    List<Map<String, dynamic>> hinosExibidos = hinos
         .where((hino) =>
             (hino["favorito"]) &&
             hino["titulo"].toLowerCase().contains(_searchText.toLowerCase()))
         .toList();
 
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('H5 CCB Cifra - Favoritos'),
+        title: Text('H5 CCB Cifra - Favoritos backup'),
         leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            _scaffoldKey.currentState!.openDrawer();
-          },
-        ),
+            icon: const Icon(Icons.menu),
+            onPressed: () {
+              if (_scaffoldKey.currentState != null) {
+                _scaffoldKey.currentState!.openDrawer();
+              }
+            },
+          ),
       ),
       drawer: MenuDrawer(scaffoldKey: _scaffoldKey),
       body: Column(
@@ -107,16 +117,16 @@ class _FavoriteViewState extends State<FavoriteView> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home,
-                color: Colors.grey),
+                color:Colors.grey),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite,
-                color: Color.fromARGB(255, 46, 0, 54)),
+                color:  Color.fromARGB(255, 46, 0, 54)),
             label: 'Favoritos',
           ),
         ],
-        currentIndex: _selectedIndex,
+        currentIndex: _showFavoritesOnly ? 1 : 0,
         onTap: (index) {
           setState(() {
             if (index == 0) {
