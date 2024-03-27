@@ -98,6 +98,11 @@ class _HomeViewState extends State<HomeView> {
                       title: Text(hinos[index]["titulo"]),
                       trailing: GestureDetector(
                         onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: hinosExibidos[index]['favorito'] == 0
+                              ? Text('Hino adicionado a lista de Favoritos!')
+                              : Text('Hino removido da lista de Favoritos!'),
+                          ));
                           setState(() {
                             final numero = hinosExibidos[index]['numero'];
                             final favorito = hinosExibidos[index]["favorito"] == 0;
