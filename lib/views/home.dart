@@ -1,12 +1,17 @@
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
-import 'package:h5_ccb_cifra/data/datahinos.dart';
 import 'package:h5_ccb_cifra/views/favorite.dart';
 import 'package:h5_ccb_cifra/views/hino.dart';
 import 'package:h5_ccb_cifra/views/rate.dart';
 import 'package:h5_ccb_cifra/componets/menu_drawer.dart';
-import 'package:h5_ccb_cifra/data/datahinos.dart';
+import 'package:h5_ccb_cifra/data/database_operations.dart';
+
+Future getHinos() async {
+  final dbHelper = DatabaseHelper.instance;
+  List<Map<String, dynamic>> hinos = await DatabaseHelper.instance.queryAllHinos();
+  return hinos;
+}
 
 
 class HomeView extends StatefulWidget {
@@ -22,17 +27,18 @@ class _HomeViewState extends State<HomeView> {
   bool _showFavoritesOnly = false;
   String _searchText = "";
   final TextEditingController _searchController = TextEditingController();
-
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(() {
-      setState(() {
-        _searchText = _searchController.text;
-      });
-    });
+    _initializeHinos(); // Inicializar a lista de hinos no initState
+  }
+
+  Future<void> _initializeHinos() async {
+    hinos = await getHinos(); // Chamar a função assíncrona para obter os hinos
+    setState(() {}); // Atualizar o estado para refletir a mudança na lista de hinos
+    print(hinos);
   }
 
   @override
@@ -43,11 +49,14 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> hinosExibidos = hinoManager.hinos
+    List<Map<String, dynamic>> hinosExibidos = hinos
         .where((hino) =>
             (!_showFavoritesOnly || hino["favorito"]) &&
             hino["titulo"].toLowerCase().contains(_searchText.toLowerCase()))
         .toList();
+    print("123");
+    print(hinosExibidos);
+    print('123');
 
     return MaterialApp(
       home: Scaffold(
@@ -78,7 +87,7 @@ class _HomeViewState extends State<HomeView> {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: hinosExibidos.length,
+                  itemCount: hinos.length,
                   itemBuilder: (BuildContext context, int index) {
                     return ListTile(
                       leading: Image.asset(
@@ -86,16 +95,18 @@ class _HomeViewState extends State<HomeView> {
                         width: 20,
                         height: 20,
                       ),
-                      title: Text(hinosExibidos[index]["titulo"]),
+                      title: Text(hinos[index]["titulo"]),
                       trailing: GestureDetector(
                         onTap: () {
                           setState(() {
-                            (hinosExibidos[index]["favorito"] == true)
-                                ? hinosExibidos[index]["favorito"] = false
-                                : hinosExibidos[index]["favorito"] = true;
+                            final numero = hinosExibidos[index]['numero'];
+                            final favorito = hinosExibidos[index]["favorito"] == 0;
+                            print(favorito);
+                            DatabaseHelper.instance.toggleFavorite(numero, favorito);
+                            _initializeHinos();
                           });
                         },
-                        child: hinosExibidos[index]["favorito"]
+                          child: hinosExibidos[index]['favorito'] == 1
                             ? Image.asset(
                                 "assets/icons/favorite-on.png",
                                 width: 25,
@@ -113,7 +124,7 @@ class _HomeViewState extends State<HomeView> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>  HinoView(index: index),
+                            builder: (context) =>  HinoView(index: index+1,),
                           ),
                         );
                       },
