@@ -35,7 +35,7 @@ class MenuDrawer extends StatelessWidget {
             onTap: () {
               Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const HomeView()),
+                  MaterialPageRoute(builder: (context) => HomeView()),
                 );
             },
           ),
@@ -45,7 +45,7 @@ class MenuDrawer extends StatelessWidget {
             onTap: () {
               Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const FavoriteView()),
+                  MaterialPageRoute(builder: (context) => FavoriteView()),
                 );
             },
           ),

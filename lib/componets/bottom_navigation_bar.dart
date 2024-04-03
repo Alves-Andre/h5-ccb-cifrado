@@ -1,30 +1,26 @@
 import 'package:flutter/material.dart';
 
-class CustomBottomNavigationBar extends StatelessWidget {
+class BottomNavigation extends StatelessWidget {
   final int selectedIndex;
-  final Function(int) onTap;
+  final Function(int) onTabTapped;
 
-  const CustomBottomNavigationBar({
-    required this.selectedIndex,
-    required this.onTap,
-    Key? key,
-  }) : super(key: key);
+  BottomNavigation({required this.selectedIndex, required this.onTabTapped});
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.home, color: Colors.grey),
+          icon: Icon(Icons.home, color: selectedIndex == 0 ? Color.fromARGB(255, 46, 0, 54) : Colors.grey),
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.favorite, color: Color.fromARGB(255, 46, 0, 54)),
+          icon: Icon(Icons.favorite, color: selectedIndex == 1 ? Color.fromARGB(255, 46, 0, 54) : Colors.grey),
           label: 'Favoritos',
         ),
       ],
       currentIndex: selectedIndex,
-      onTap: onTap,
+      onTap: onTabTapped,
     );
   }
 }

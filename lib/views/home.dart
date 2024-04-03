@@ -1,18 +1,16 @@
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
+import 'package:h5_ccb_cifra/componets/bottom_navigation_bar.dart';
+import 'package:h5_ccb_cifra/componets/custom_snackbar.dart';
+import 'package:h5_ccb_cifra/componets/search_input.dart';
 import 'package:h5_ccb_cifra/views/favorite.dart';
 import 'package:h5_ccb_cifra/views/hino.dart';
-import 'package:h5_ccb_cifra/views/rate.dart';
 import 'package:h5_ccb_cifra/componets/menu_drawer.dart';
 import 'package:h5_ccb_cifra/data/database_operations.dart';
 
-Future getHinos() async {
+Future<List<Map<String, dynamic>>> getHinos() async {
   final dbHelper = DatabaseHelper.instance;
-  List<Map<String, dynamic>> hinos = await DatabaseHelper.instance.queryAllHinos();
-  return hinos;
+  return await dbHelper.queryAllHinos();
 }
-
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -22,23 +20,26 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  bool isStarred = false;
   int _selectedIndex = 0;
   bool _showFavoritesOnly = false;
   String _searchText = "";
   final TextEditingController _searchController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  List<Map<String, dynamic>> _hinos = [];
 
   @override
   void initState() {
     super.initState();
-    _initializeHinos(); // Inicializar a lista de hinos no initState
+    _initializeHinos();
   }
 
   Future<void> _initializeHinos() async {
-    hinos = await getHinos(); // Chamar a função assíncrona para obter os hinos
-    setState(() {}); // Atualizar o estado para refletir a mudança na lista de hinos
-    print(hinos);
+    final hinos = await getHinos();
+    if (mounted) {
+      setState(() {
+        _hinos = hinos;
+      });
+    }
   }
 
   @override
@@ -49,14 +50,11 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> hinosExibidos = hinos
+    List<Map<String, dynamic>> hinosExibidos = _hinos
         .where((hino) =>
-            (!_showFavoritesOnly || hino["favorito"]) &&
+            (!_showFavoritesOnly || hino["favorito"] == 1) &&
             hino["titulo"].toLowerCase().contains(_searchText.toLowerCase()))
         .toList();
-    print("123");
-    print(hinosExibidos);
-    print('123');
 
     return MaterialApp(
       home: Scaffold(
@@ -70,24 +68,21 @@ class _HomeViewState extends State<HomeView> {
             },
           ),
         ),
-        drawer: 
-          MenuDrawer(scaffoldKey: _scaffoldKey),
+        drawer: MenuDrawer(scaffoldKey: _scaffoldKey),
         body: Center(
           child: Column(
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Pesquisar',
-                  ),
-                ),
+              SearchInput(
+                controller: _searchController,
+                onChanged: (value) {
+                  setState(() {
+                    _searchText = value;
+                  });
+                },
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: hinos.length,
+                  itemCount: hinosExibidos.length,
                   itemBuilder: (BuildContext context, int index) {
                     return ListTile(
                       leading: Image.asset(
@@ -95,23 +90,16 @@ class _HomeViewState extends State<HomeView> {
                         width: 20,
                         height: 20,
                       ),
-                      title: Text(hinos[index]["titulo"]),
+                      title: Text(hinosExibidos[index]["titulo"]),
                       trailing: GestureDetector(
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: hinosExibidos[index]['favorito'] == 0
-                              ? Text('Hino adicionado a lista de Favoritos!')
-                              : Text('Hino removido da lista de Favoritos!'),
-                          ));
-                          setState(() {
-                            final numero = hinosExibidos[index]['numero'];
-                            final favorito = hinosExibidos[index]["favorito"] == 0;
-                            print(favorito);
-                            DatabaseHelper.instance.toggleFavorite(numero, favorito);
-                            _initializeHinos();
-                          });
+                          final numero = hinosExibidos[index]['numero'];
+                          final favorito = hinosExibidos[index]["favorito"] == 0;
+                          CustomSnackBar.showFavoriteSnackBar(context, favorito);
+                          DatabaseHelper.instance.toggleFavorite(numero, favorito);
+                          _initializeHinos();
                         },
-                          child: hinosExibidos[index]['favorito'] == 1
+                        child: hinosExibidos[index]['favorito'] == 1
                             ? Image.asset(
                                 "assets/icons/favorite-on.png",
                                 width: 25,
@@ -123,13 +111,12 @@ class _HomeViewState extends State<HomeView> {
                                 height: 25,
                               ),
                       ),
-                      shape: Border(
-                          bottom: BorderSide(color: Colors.black)),
+                      shape: Border(bottom: BorderSide(color: Colors.black)),
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>  HinoView(index: index+1,),
+                            builder: (context) => HinoView(index: index + 1),
                           ),
                         );
                       },
@@ -140,31 +127,19 @@ class _HomeViewState extends State<HomeView> {
             ],
           ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home,
-                  color: Color.fromARGB(255, 46, 0, 54)),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite,
-                  color: Colors.grey),
-              label: 'Favoritos',
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          onTap: (index) {
+        bottomNavigationBar: BottomNavigation(
+          selectedIndex: _selectedIndex,
+          onTabTapped: (index) {
             setState(() {
               _selectedIndex = index;
               _showFavoritesOnly = _selectedIndex == 1;
-              
-              if (_selectedIndex == 1) {
-                // Navegar para a tela de Favoritos
-                Navigator.push(
+              if (_selectedIndex == 0) {
+                Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(fullscreenDialog: true, builder: (context) => FavoriteView()),
-                );
+                  MaterialPageRoute(
+                    builder: (context) => HomeView(),
+                  ),
+                ).then((_) => _initializeHinos());
               }
             });
           },

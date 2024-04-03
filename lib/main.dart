@@ -11,6 +11,14 @@ void main() async{
     ),
   );
   final dbHelper = DatabaseHelper.instance;
+  //await dbHelper.resetDatabase();
   List<Map<String, dynamic>> hinos = await DatabaseHelper.instance.queryAllHinos();
+
+  print(hinos);
+
+  //Testar funcao de adicionar cifra
+  await dbHelper.addCifra(1, 'hino1.txt');
+  //printar na tela todas as cifras
+  print(await dbHelper.queryCifra(1));
 }
 
