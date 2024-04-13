@@ -97,6 +97,7 @@ class _HomeViewState extends State<HomeView> {
                           final favorito = hinosExibidos[index]["favorito"] == 0;
                           CustomSnackBar.showFavoriteSnackBar(context, favorito);
                           DatabaseHelper.instance.toggleFavorite(numero, favorito);
+                          print( hinosExibidos[index]['numero']);
                           _initializeHinos();
                         },
                         child: hinosExibidos[index]['favorito'] == 1

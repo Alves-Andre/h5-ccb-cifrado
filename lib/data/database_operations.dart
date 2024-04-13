@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:h5_ccb_cifra/data/datahinos.dart';
 
 class DatabaseHelper {
   static final _databaseName = "hinos_database.db";
@@ -42,6 +43,16 @@ class DatabaseHelper {
         version: _databaseVersion, onCreate: _onCreate);
   }
 
+  //excluir banco de dados
+  Future<void> deletarBanco() async {
+    // Obtenha o caminho do banco de dados
+    String path = join(await getDatabasesPath(), _databaseName);
+    // Exclua o banco de dados
+    await deleteDatabase(path);
+    // Defina o banco de dados como nulo
+    _database = null;
+  }
+
   // método onCreate, que é chamado apenas da primeira vez que o banco de dados é criado
   Future _onCreate(Database db, int version) async {
     await db.execute('''
@@ -65,34 +76,22 @@ class DatabaseHelper {
     await _insertDefaultHinos(db);
   }
 
-  Future<void> resetDatabase() async {
-    Database? db = await instance.database;
-    await db!.close();
-    String path = join(await getDatabasesPath(), _databaseName);
-    await deleteDatabase(path);
-    _database = null;
-  }
-
-
   Future _insertDefaultHinos(Database db) async {
-    // Insira suas inserções padrão aqui
-    await db.insert(table, {columnNumber: 1, columnTitle: '1 - Cristo, meu Mestre...', columnFavorite: 1});
-    await db.insert(table, {columnNumber: 2, columnTitle: '2 - De Deus tu és eleita', columnFavorite: 0});
-    await db.insert(table, {columnNumber: 3, columnTitle: '3 - Faz-nos ouvir Tua voz', columnFavorite: 1});
-    await db.insert(table, {columnNumber: 4, columnTitle: '4 - Ouve a nossa oração', columnFavorite: 0});
-    await db.insert(table, {columnNumber: 5, columnTitle: '5 - A Rocha celestial', columnFavorite: 0});
+    for (var hino in listaHinos) {
+      await db.insert(table, {columnNumber: hino['number'], columnTitle: hino['title'], columnFavorite: 0});
+    }
   }
 
-  // Método de consulta para buscar todos os hinos
+  // Método de consulta para buscar todos os hinos em ordem crescente de número
   Future<List<Map<String, dynamic>>> queryAllHinos() async {
     Database? db = await instance.database;
-    return await db!.query(table);
+    return await db!.query(table, orderBy: '$columnNumber ASC');
   }
 
   Future<void> toggleFavorite(int numero, bool favorito) async {
     Database? db = await instance.database;
     await db!.rawUpdate(
-      'UPDATE $table SET $columnFavorite = ? WHERE $columnId = ?',
+      'UPDATE $table SET $columnFavorite = ? WHERE $columnNumber = ?',
       [favorito ? 1 : 0, numero],
     );
   }
@@ -124,43 +123,4 @@ class DatabaseHelper {
     Database? db = await instance.database;
     return await db!.query(table, where: '$columnFavorite = 1');
   }
-
-  //Criar a tabela chamada cifra que terá as colunas, id, numero, titulo e cifra
-  //Criar metodo de adicionar cifra, o metodo deve receber um nome de um arquivo txt e o id do hino, a cifra deve ser adicionada no formato lista de string, onde cada string é uma linha do arquivo
-  //Criar metodo de buscar cifra, o metodo deve receber o id do hino e retornar a cifra do hino
-
-  //Método para adicionar cifra
-  Future<void> addCifra(int numero, String fileName) async {
-    Database? db = await instance.database;
-    String cifra = await _readCifra(fileName);
-    await db!.insert(cifraTable, {cifraColumnNumber: numero, cifraColumnCifra: cifra});
-  }
-
-  //Método para buscar cifra
-  Future<String> queryCifra(int id) async {
-    Database? db = await instance.database;
-    List<Map<String, dynamic>> results = await db!.query('cifra',
-        where: '$columnId = ?',
-        whereArgs: [id],
-        limit: 1); // Limitar a consulta a um resultado
-    if (results.isNotEmpty) {
-      return results.first['cifra'];
-    } else {
-      throw Exception('Cifra não encontrada');
-    }
-  }
-
-  //Método para ler a cifra de um arquivo
-  Future<String> _readCifra(String fileName) async {
-    try {
-      // Lê o conteúdo do arquivo
-      String conteudo = await rootBundle.loadString('assets/data/$fileName');
-      return conteudo;
-    } catch (e) {
-      // Trate possíveis erros ao ler o arquivo
-      print('assets/data/$fileName Erro ao ler o arquivo:  $e');
-      return '';
-    }
-  }
-  
 }
