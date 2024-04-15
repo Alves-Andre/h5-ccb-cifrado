@@ -117,7 +117,7 @@ class _HomeViewState extends State<HomeView> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HinoView(index: index + 1),
+                            builder: (context) => HinoView(index: (index+1).toString().padLeft(3, '0'),),
                           ),
                         );
                       },
