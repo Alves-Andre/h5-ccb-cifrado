@@ -100,7 +100,7 @@ class _FavoriteViewState extends State<FavoriteView> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => HinoView(index: (index+1).toString().padLeft(3, '0'),),
+                          builder: (context) => HinoView(index: (index+1).toString().padLeft(3, '0'),titulo: hinosExibidos[index]["titulo"],),
                         ),
                       );
                     },

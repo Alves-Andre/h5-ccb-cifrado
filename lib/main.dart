@@ -4,8 +4,11 @@ import 'package:h5_ccb_cifra/views/home.dart';
 import 'package:h5_ccb_cifra/views/favorite.dart';
 
 void main() async{
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await DatabaseHelper.instance.deletarBanco();
+  WidgetsFlutterBinding.ensureInitialized();
+  // DatabaseHelper.instance.deletarBanco();
+  // sqfliteFfiInit();
+  // databaseFactory = databaseFactoryFfi;
+  await DatabaseHelper.instance.initDatabase(); 
   runApp(
     MaterialApp(
       home: HomeView(),

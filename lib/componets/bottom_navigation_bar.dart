@@ -11,15 +11,17 @@ class BottomNavigation extends StatelessWidget {
     return BottomNavigationBar(
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.home, color: selectedIndex == 0 ? Color.fromARGB(255, 46, 0, 54) : Colors.grey),
+          icon: Icon(Icons.home, color: selectedIndex == 0 ? Color.fromARGB(210, 0, 0, 0) : Colors.grey),
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.favorite, color: selectedIndex == 1 ? Color.fromARGB(255, 46, 0, 54) : Colors.grey),
+          icon: Icon(Icons.favorite, color: selectedIndex == 1 ? Colors.black : Colors.grey),
           label: 'Favoritos',
         ),
       ],
       currentIndex: selectedIndex,
+      selectedItemColor: Colors.black,
+      unselectedItemColor: Colors.grey,
       onTap: onTabTapped,
     );
   }

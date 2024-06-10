@@ -27,10 +27,10 @@ class AboutView extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Text(
-              'O H5 CCB Cifra é um aplicativo que reúne hinos da Congregação Cristã no Brasil com cifras para violão'
-              'O aplicativo foi desenvolvido com o intuito de facilitar a vida dos músicos e instrumentistas que desejam tocar os hinos da CCB. '
-              'Além disso, o aplicativo conta com recursos como favoritar hinos, pesquisar hinos por número ou título, e avaliar o aplicativo.'
-              'Esperamos que o aplicativo seja útil para você e que possa te ajudar a louvar a Deus através da música.',
+              'O H5 CCB Cifra é um aplicativo que reúne hinos da Congregação Cristã no Brasil com cifras para violão.\n'
+              'O aplicativo foi desenvolvido com o intuito de facilitar a vida dos músicos e instrumentistas que desejam tocar os hinos da CCB. \n'
+              'Além disso, o aplicativo conta com recursos como favoritar hinos, pesquisar hinos por número ou título, e avaliar o aplicativo.\n'
+              'Esperamos que o aplicativo seja útil para você e que possa te ajudar a louvar a Deus através da música.\n',
               style: TextStyle(
                 fontSize: 16,
               ),
@@ -44,7 +44,7 @@ class AboutView extends StatelessWidget {
               ),
             ),
             Text(
-              'André da Silva Alves',
+              'André Alves',
               style: TextStyle(
                 fontSize: 16,
               ),

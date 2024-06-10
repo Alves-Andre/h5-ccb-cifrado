@@ -19,18 +19,19 @@ class MenuDrawer extends StatelessWidget {
         children: <Widget>[
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
             ),
-            child: Text(
-              'Menu',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
+            child: Center(
+              child: Text(
+                'Hinário 5 CCB Cifrado',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 24,
+                ),
               ),
             ),
           ),
           ListTile(
-            leading: Icon(Icons.home),
+            leading: Icon(Icons.home, color: Color.fromARGB(210, 0, 0, 0),),
             title: Text('Home'),
             onTap: () {
               Navigator.push(
@@ -40,7 +41,7 @@ class MenuDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.favorite),
+            leading: Icon(Icons.favorite, color: Color.fromARGB(210, 0, 0, 0),),
             title: Text('Favoritos'),
             onTap: () {
               Navigator.push(
@@ -50,7 +51,7 @@ class MenuDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.star),
+            leading: Icon(Icons.star, color: Color.fromARGB(210, 0, 0, 0),),
             title: Text('Avaliar'),
             onTap: () {
               Navigator.push(
@@ -60,7 +61,7 @@ class MenuDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.monetization_on),
+            leading: Icon(Icons.monetization_on, color: Color.fromARGB(210, 0, 0, 0),),
             title: Text('Doação'),
             onTap: () {
               Navigator.push(
@@ -70,7 +71,7 @@ class MenuDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.info),
+            leading: Icon(Icons.info, color: Color.fromARGB(210, 0, 0, 0),),
             title: Text('Sobre'),
             onTap: () {
               Navigator.push(
@@ -81,7 +82,7 @@ class MenuDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.exit_to_app),
+            leading: Icon(Icons.exit_to_app, color: Color.fromARGB(210, 0, 0, 0),),
             title: Text('Sair'),
             onTap: () {
               exit(0);

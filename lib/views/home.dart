@@ -48,19 +48,29 @@ class _HomeViewState extends State<HomeView> {
     super.dispose();
   }
 
+  String removeDiacritics(String str) {
+    const withDiacritics = 'ÀÁÂÃÄÅàáâãäåÈÉÊËèéêëÌÍÎÏìíîïÒÓÔÕÖØòóôõöøÙÚÛÜùúûüÇçÑñÿÝýŔŕ';
+    const withoutDiacritics = 'AAAAAAaaaaaaEEEEeeeeIIIIiiiiOOOOOOooooooUUUUuuuuCcNnyYyRr';
+    for (int i = 0; i < withDiacritics.length; i++) {
+      str = str.replaceAll(withDiacritics[i], withoutDiacritics[i]);
+    }
+    return str;
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> hinosExibidos = _hinos
         .where((hino) =>
             (!_showFavoritesOnly || hino["favorito"] == 1) &&
-            hino["titulo"].toLowerCase().contains(_searchText.toLowerCase()))
+            removeDiacritics(hino["titulo"].toLowerCase())
+                .contains(removeDiacritics(_searchText.toLowerCase())))
         .toList();
 
     return MaterialApp(
       home: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text('H5 CCB Cifra - Home'),
+          title: Text('Hinário 5 CCB Cifrado'),
           leading: IconButton(
             icon: const Icon(Icons.menu),
             onPressed: () {
@@ -72,55 +82,65 @@ class _HomeViewState extends State<HomeView> {
         body: Center(
           child: Column(
             children: <Widget>[
-              SearchInput(
-                controller: _searchController,
-                onChanged: (value) {
-                  setState(() {
-                    _searchText = value;
-                  });
-                },
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SearchInput(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    setState(() {
+                      _searchText = value;
+                    });
+                  },
+                ),
               ),
               Expanded(
                 child: ListView.builder(
                   itemCount: hinosExibidos.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                      leading: Image.asset(
-                        'assets/icons/music-book.png',
-                        width: 20,
-                        height: 20,
-                      ),
-                      title: Text(hinosExibidos[index]["titulo"]),
-                      trailing: GestureDetector(
-                        onTap: () {
-                          final numero = hinosExibidos[index]['numero'];
-                          final favorito = hinosExibidos[index]["favorito"] == 0;
-                          CustomSnackBar.showFavoriteSnackBar(context, favorito);
-                          DatabaseHelper.instance.toggleFavorite(numero, favorito);
-                          print( hinosExibidos[index]['numero']);
-                          _initializeHinos();
-                        },
-                        child: hinosExibidos[index]['favorito'] == 1
-                            ? Image.asset(
-                                "assets/icons/favorite-on.png",
-                                width: 25,
-                                height: 25,
-                              )
-                            : Image.asset(
-                                "assets/icons/favorite-off.png",
-                                width: 25,
-                                height: 25,
-                              ),
-                      ),
-                      shape: Border(bottom: BorderSide(color: Colors.black)),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HinoView(index: (index+1).toString().padLeft(3, '0'),),
+                    return Column(
+                      children: [
+                        ListTile(
+                          leading: Image.asset(
+                            'assets/icons/music-book.png',
+                            width: 20,
+                            height: 20,
                           ),
-                        );
-                      },
+                          title: Text(hinosExibidos[index]["titulo"]),
+                          trailing: GestureDetector(
+                            onTap: () {
+                              final numero = hinosExibidos[index]['numero'];
+                              final favorito = hinosExibidos[index]["favorito"] == 0;
+                              CustomSnackBar.showFavoriteSnackBar(context, favorito);
+                              DatabaseHelper.instance.toggleFavorite(numero, favorito);
+                              print(hinosExibidos[index]['numero']);
+                              _initializeHinos();
+                            },
+                            child: hinosExibidos[index]['favorito'] == 1
+                                ? Image.asset(
+                                    "assets/icons/favorite-on.png",
+                                    width: 25,
+                                    height: 25,
+                                  )
+                                : Image.asset(
+                                    "assets/icons/favorite-off.png",
+                                    width: 25,
+                                    height: 25,
+                                  ),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HinoView(
+                                  index: hinosExibidos[index]['numero'].toString().padLeft(3, '0'),
+                                  titulo: hinosExibidos[index]["titulo"],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        Divider(color: Colors.black),
+                      ],
                     );
                   },
                 ),

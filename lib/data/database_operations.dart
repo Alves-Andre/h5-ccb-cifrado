@@ -32,12 +32,12 @@ class DatabaseHelper {
   Future<Database?> get database async {
     if (_database != null) return _database;
     // instantâneo não nulo, inicialize o banco de dados
-    _database = await _initDatabase();
+    _database = await initDatabase();
     return _database;
   }
 
   // inicializar o banco de dados
-  _initDatabase() async {
+  initDatabase() async {
     String path = join(await getDatabasesPath(), _databaseName);
     return await openDatabase(path,
         version: _databaseVersion, onCreate: _onCreate);

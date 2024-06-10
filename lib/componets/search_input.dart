@@ -16,6 +16,7 @@ class SearchInput extends StatelessWidget {
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           labelText: 'Pesquisar',
+          fillColor: Colors.white,
         ),
       ),
     );

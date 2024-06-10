@@ -35,18 +35,16 @@ class DonateView extends StatelessWidget {
                 fontSize: 16,
               ),
             ),
-            //Texto com a chave pix e um botao para copiar para a area de tranferencia
             Text(
-              'Chave PIX: \nAAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA\n',
+              'Chave PIX: \n737f3ddb-3004-4767-aace-1b54781886dc\n',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            //Botao centralizado para copiar a chave pix
             Center(child: ElevatedButton(
               onPressed: () {
-                Clipboard.setData(ClipboardData(text: "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"));
+                Clipboard.setData(ClipboardData(text: "737f3ddb-3004-4767-aace-1b54781886dc"));
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text('Chave PIX copiada para a área de transferência!'),
                 ));
@@ -57,7 +55,7 @@ class DonateView extends StatelessWidget {
 
             SizedBox(height: 20),
             Text(
-              'Obrigado!',
+              'Obrigado e Deus abençoe!',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
