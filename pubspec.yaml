@@ -37,6 +37,21 @@ dependencies:
   path_provider: ^2.1.2
   path: ^1.8.0
   sqflite: 2.0.0+3
+  flutter_native_splash: ^1.2.0
+  flutter_launcher_icons: ^0.9.1
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/app/icon-app.png
+  android: true
+  ios: true
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/app/icon-app.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/app/icon-app.png"
 
 dev_dependencies:
   flutter_test:

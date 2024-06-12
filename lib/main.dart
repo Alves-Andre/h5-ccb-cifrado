@@ -5,6 +5,7 @@ import 'package:h5_ccb_cifra/views/favorite.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  debugShowCheckedModeBanner: false;
   // DatabaseHelper.instance.deletarBanco();
   // sqfliteFfiInit();
   // databaseFactory = databaseFactoryFfi;

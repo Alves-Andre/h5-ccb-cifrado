@@ -1,4 +1,4 @@
-package com.example.projeto;
+package com.cifras.ccb;
 
 import io.flutter.embedding.android.FlutterActivity;
 
